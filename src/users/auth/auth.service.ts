@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common/decorators';
-import { UsersService } from './users.service';
+import { UsersService } from '../users.service';
 import {
   BadRequestException,
   InternalServerErrorException,
