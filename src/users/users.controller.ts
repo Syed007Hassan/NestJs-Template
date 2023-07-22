@@ -46,8 +46,8 @@ export class UsersController {
   @Post('/signup')
   async createUser(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signup(body.email, body.password);
-    session.userId = user.id;
-    return user;
+    // session.userId = user.id;
+    return { access_token: user.access_token };
   }
 
   @Post('/signin')
@@ -62,8 +62,8 @@ export class UsersController {
       throw new NotFoundException('user not found');
     }
 
-    session.userId = user.id;
-    return res.send(user);
+    // session.userId = user.id;
+    return res.send({ access_token: user.access_token });
   }
 
   @Post('/signOut')

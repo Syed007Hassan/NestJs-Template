@@ -6,11 +6,15 @@ import {
 } from '@nestjs/common';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
+import { JwtService } from '@nestjs/jwt';
 
 const scrypt = promisify(_scrypt);
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   async signup(email: string, password: string) {
     //see if email is in use
@@ -27,7 +31,10 @@ export class AuthService {
 
     const user = await this.usersService.create(email, result); //create user
 
-    return user;
+    const payload = { sub: user.id, username: user.email };
+    const access_token = await this.jwtService.signAsync(payload);
+
+    return { access_token };
   }
 
   async signin(email: string, password: string) {
@@ -44,7 +51,10 @@ export class AuthService {
         throw new BadRequestException('Invalid credentials');
       }
 
-      return user;
+      const payload = { sub: user.id, username: user.email };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
