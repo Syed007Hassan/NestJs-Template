@@ -8,7 +8,6 @@ import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
 import { AuthGuard } from 'src/guards/auth.guards';
-import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
@@ -19,14 +18,7 @@ import { APP_GUARD } from '@nestjs/core';
     }),
   ],
   controllers: [UsersController],
-  providers: [
-    UsersService,
-    AuthService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [UsersService, AuthService, AuthGuard],
 })
 export class UsersModule {
   // This is a middleware that will be applied to all routes

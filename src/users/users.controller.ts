@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Res,
   Session,
+  Request,
   UseInterceptors,
   UseGuards,
   HttpStatus,
@@ -31,7 +32,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Users')
 @Controller('auth')
 // @Serialize(UserDto)
-@UseInterceptors(CurrentUserInterceptor)
+// @UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
   constructor(
     private usersService: UsersService,
@@ -39,22 +40,24 @@ export class UsersController {
   ) {}
 
   //use guards to protect routes from unauthorized access
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('/whoami')
-  whoAmI(@CurrentUser() user: User) {
-    return user;
+  whoAmI(@Request() req) {
+    return req.user;
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
-  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+  async createUser(@Body() body: CreateUserDto, @Res() res: Response) {
     const result = await this.authService.signup(body.email, body.password);
+    res.setHeader('Authorization', `Bearer ${result}`);
 
     // session.userId = user.id;
 
     return result;
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/signin')
   async signin(
@@ -67,6 +70,8 @@ export class UsersController {
     if (!result) {
       throw new NotFoundException('user not found');
     }
+
+    res.setHeader('Authorization', `Bearer ${result}`);
 
     return res.send(result);
   }

@@ -32,11 +32,12 @@ export class AuthService {
     const user = await this.usersService.create(email, result); //create user
 
     const payload = { sub: user.id, username: user.email };
-    const access_token = await this.jwtService.signAsync(payload);
 
     // return { id: user.id, email: user.email, access_token: access_token };
 
-    return access_token;
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 
   async signin(email: string, password: string) {
@@ -54,11 +55,9 @@ export class AuthService {
       }
 
       const payload = { sub: user.id, username: user.email };
-      const access_token = await this.jwtService.signAsync(payload);
-
-      // return { id: user.id, email: user.email, access_token: access_token };
-
-      return access_token;
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

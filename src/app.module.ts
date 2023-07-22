@@ -40,11 +40,11 @@ import { jwtConstants } from './users/auth/constants';
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(
-      cookieSession({
-        keys: ['mysecret'],
-      }),
-    );
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(
+  //     cookieSession({
+  //       keys: ['mysecret'],
+  //     }),
+  //   );
+  // }
 }
