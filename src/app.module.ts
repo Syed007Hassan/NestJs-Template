@@ -8,6 +8,8 @@ import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 const cookieSession = require('cookie-session');
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './users/auth/constants';
 
 @Module({
   imports: [

@@ -26,7 +26,7 @@ export class ReportsController {
   constructor(private reportsService: ReportsService) {}
 
   @Post()
-  @UseGuards(new AuthGuard())
+  @UseGuards(AuthGuard)
   @Serialize(ReportDto)
   createReport(
     @Body() body: createReportDTO,

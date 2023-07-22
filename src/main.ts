@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
-const cookieSession = require('cookie-session');
+// const cookieSession = require('cookie-session');
 
 async function bootstrap() {
   const logger = new Logger();
@@ -36,7 +36,7 @@ async function bootstrap() {
 
   // app.use(cookieParser());
 
-  app.use(cookieSession({ keys: ['mysecret'] }));
+  // app.use(cookieSession({ keys: ['mysecret'] }));
 
   app.useGlobalPipes(
     new ValidationPipe({

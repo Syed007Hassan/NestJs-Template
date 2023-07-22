@@ -12,6 +12,8 @@ import {
   Session,
   UseInterceptors,
   UseGuards,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user-dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -28,7 +30,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Users')
 @Controller('auth')
-@Serialize(UserDto)
+// @Serialize(UserDto)
 @UseInterceptors(CurrentUserInterceptor)
 export class UsersController {
   constructor(
@@ -43,30 +45,30 @@ export class UsersController {
     return user;
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('/signup')
   async createUser(@Body() body: CreateUserDto, @Session() session: any) {
-    const user = await this.authService.signup(body.email, body.password);
+    const result = await this.authService.signup(body.email, body.password);
 
-    session.userId = user.id;
+    // session.userId = user.id;
 
-    return user;
+    return result;
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('/signin')
   async signin(
     @Body() body: CreateUserDto,
     @Res() res: Response,
     @Session() session: any,
   ) {
-    const user = await this.authService.signin(body.email, body.password);
+    const result = await this.authService.signin(body.email, body.password);
 
-    if (!user) {
+    if (!result) {
       throw new NotFoundException('user not found');
     }
 
-    session.userId = user.id;
-
-    return res.send(user);
+    return res.send(result);
   }
 
   @Post('/signOut')
