@@ -1,50 +1,16 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { ReportsModule } from './reports/reports.module';
-import { User } from './users/user.entity';
-import { Report } from './reports/report.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-const cookieSession = require('cookie-session');
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './users/auth/constants';
+import { UserModule } from './user/user.module';
+import { CommentModule } from './comment/comment.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+
+import config from 'ormconfig';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: `.env.development`,
-    }),
-    // below is way to use async config service to get db name from .env file
-    TypeOrmModule.forRootAsync({
-      useFactory: async (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        username: config.get('DB_USER'),
-        password: config.get('DB_PASSWORD'),
-        database: config.get('DB_NAME'),
-        schema: config.get('DB_SCHEMA'),
-        entities: [User, Report],
-        synchronize: true,
-        logging: true,
-      }),
-      inject: [ConfigService],
-    }),
-    UsersModule,
-    ReportsModule,
-  ],
+  imports: [UserModule, CommentModule, TypeOrmModule.forRoot(config), AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(
-  //     cookieSession({
-  //       keys: ['mysecret'],
-  //     }),
-  //   );
-  // }
-}
+export class AppModule {}
