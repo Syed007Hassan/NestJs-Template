@@ -7,6 +7,7 @@ import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 import { ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/LoginDto';
+import { JwtStrategy } from './strategies/jwt-strategy';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -16,10 +17,9 @@ export class AuthController {
     private userService: UserService,
   ) {}
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtStrategy)
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    console.log(loginDto + 'loginDto');
     return await this.authService.login(loginDto);
   }
 
@@ -30,7 +30,7 @@ export class AuthController {
 
   @UseGuards(RefreshJwtGuard)
   @Post('refresh')
-  async refrshToken(@Request() req) {
+  async refreshToken(@Request() req) {
     return this.authService.refreshToken(req.user);
   }
 }

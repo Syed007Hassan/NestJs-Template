@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/entities/user.entity';
@@ -14,23 +14,40 @@ export class AuthService {
   async validateUser(userEmail: string, password: string) {
     console.log('hello');
     const user = await this.userService.findOneWithEmail(userEmail);
+
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
+
+    if (user && !(await bcrypt.compare(password, user.password))) {
+      throw new BadRequestException('Password is incorrect');
+    }
+
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
+
     return null;
   }
 
   async login(user: LoginDto) {
+    const userExists = await this.validateUser(user.email, user.password);
+
+    if (!userExists) {
+      throw new BadRequestException('User does not exist');
+    }
+
     const payload = {
-      email: user.email,
+      email: userExists.email,
       sub: {
-        password: user.password,
+        password: userExists.password,
       },
     };
 
+    console.log(JSON.stringify(payload));
+
     return {
-      ...user,
+      ...userExists,
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
@@ -38,9 +55,9 @@ export class AuthService {
 
   async refreshToken(user: User) {
     const payload = {
-      username: user.email,
+      email: user.email,
       sub: {
-        name: user.name,
+        password: user.password,
       },
     };
 
