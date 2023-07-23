@@ -24,10 +24,9 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Car example')
-    .setDescription('The Car API description')
+    .setTitle('Nest Template API')
+    .setDescription('Reusable NestJS API template')
     .setVersion('1.0')
-    .addTag('Cars')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -12,7 +12,8 @@ import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CommentService } from 'src/comment/comment.service';
 import { CreateUserDto } from './dto/createUserDto';
 import { UserService } from './user.service';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(
