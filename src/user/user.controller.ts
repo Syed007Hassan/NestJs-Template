@@ -21,12 +21,12 @@ export class UserController {
     private readonly commentService: CommentService,
   ) {}
 
-  @Get(':id')
+  @Get('/findOne/:id')
   findOne(@Param('id') id: number) {
     return this.userService.findOne(id);
   }
 
-  @Post()
+  @Post('/create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
