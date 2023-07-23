@@ -5,13 +5,15 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 
 const config: PostgresConnectionOptions = {
   type: 'postgres',
-  database: 'testDB',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSword,
+  schema: process.env.DB_SCHEMA,
   entities: [User, Topic, Comment],
   synchronize: true,
+  logging: true,
 };
 
 export default config;

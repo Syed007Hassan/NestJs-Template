@@ -9,7 +9,12 @@ import { AuthModule } from './auth/auth.module';
 import config from 'ormconfig';
 
 @Module({
-  imports: [UserModule, CommentModule, TypeOrmModule.forRoot(config), AuthModule],
+  imports: [
+    UserModule,
+    CommentModule,
+    TypeOrmModule.forRootAsync(config),
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
