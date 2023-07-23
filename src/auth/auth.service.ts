@@ -44,8 +44,6 @@ export class AuthService {
       },
     };
 
-    console.log(JSON.stringify(payload));
-
     return {
       ...userExists,
       accessToken: this.jwtService.sign(payload),

@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':id/comments')
+  @Get('comments/:id')
   getUserComment(@Param('id') id: string) {
     return this.commentService.findUserComments(id);
   }
