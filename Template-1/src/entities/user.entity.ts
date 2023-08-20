@@ -22,6 +22,9 @@ export class User {
   @Column({ nullable: false })
   password: string;
 
+  @Column({ nullable: true })
+  avatar: string;
+
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments: Comment[];
 
