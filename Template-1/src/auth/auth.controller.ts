@@ -17,7 +17,6 @@ export class AuthController {
     private userService: UserService,
   ) {}
 
-  @UseGuards(JwtStrategy)
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return await this.authService.login(loginDto);
