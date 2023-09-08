@@ -1,66 +1,63 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ExistingUserDto } from 'src/user/dto/existing-user.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/entities/user.entity';
+import { LoginUserDto } from '../user/dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto/LoginDto';
+
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    private userService: UserService,
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(userEmail: string, password: string) {
-    console.log('hello');
-    const user = await this.userService.findOneWithEmail(userEmail);
-
-    if (user && (await bcrypt.compare(password, user.password))) {
-      return user;
+  async registerUser(user: ExistingUserDto) {
+    const findUser = await this.userService.findOneByEmail(user.email);
+    if (findUser) {
+      throw new Error('User already exists');
     }
+    const newUser = await this.userService.create(user);
+    return { name: newUser.name, email: newUser.email };
+  }
 
-    if (user && !(await bcrypt.compare(password, user.password))) {
-      throw new BadRequestException('Password is incorrect');
-    }
+  async login(loginUserDto: LoginUserDto) {
+    const user = await this.validateUser(
+      loginUserDto.email,
+      loginUserDto.password,
+    );
 
+    const payload = { email: user.email, name: user.name };
+    const jwt = await this.jwtService.signAsync(payload);
+    return { jwt };
+  }
+
+  async doesPasswordMatch(password: string, hashedPassword: string) {
+    return bcrypt.compareSync(password, hashedPassword); // true
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findOneByEmail(email);
     if (!user) {
-      throw new BadRequestException('User does not exist');
+      throw new Error('User not found');
     }
-
-    return null;
+    const isPasswordMatching = await this.doesPasswordMatch(
+      password,
+      user.password,
+    );
+    if (!isPasswordMatching) {
+      throw new Error('Invalid credentials');
+    }
+    return { name: user.name, email: user.email };
   }
 
-  async login(user: LoginDto) {
-    const userExists = await this.validateUser(user.email, user.password);
+  async verifyJwt(jwt: string) {
+    const { exp } = await this.jwtService.verifyAsync(jwt);
 
-    if (!userExists) {
-      throw new BadRequestException('User does not exist');
+    if (exp < Date.now()) {
+      throw new Error('Token expired');
     }
 
-    const payload = {
-      email: userExists.email,
-      sub: {
-        password: userExists.password,
-      },
-    };
-
-    return {
-      ...userExists,
-      accessToken: this.jwtService.sign(payload),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
-    };
-  }
-
-  async refreshToken(user: User) {
-    const payload = {
-      email: user.email,
-      sub: {
-        password: user.password,
-      },
-    };
-
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
+    return { exp };
   }
 }

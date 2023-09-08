@@ -3,11 +3,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 
 async function bootstrap() {
   const logger = new Logger();
 
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors();
+  dotenv.config();
+  app.setGlobalPrefix('api');
 
   // Log each request
   app.use((req, res, next) => {
@@ -39,6 +44,5 @@ async function bootstrap() {
   );
 
   await app.listen(5000);
-  logger.log('Application listening on port 8000');
 }
 bootstrap();

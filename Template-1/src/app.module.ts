@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { CommentModule } from './comment/comment.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from './entities/user.entity';
-import { Comment } from './entities/comment.entity';
-import { Topic } from './entities/topic.entity';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { PostgreSqlDataSource } from './config/ormConfig';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -16,27 +14,13 @@ import { Topic } from './entities/topic.entity';
       isGlobal: true,
       envFilePath: `.env`,
     }),
-    // below is way to use async config service to get db name from .env file
-    TypeOrmModule.forRootAsync({
-      useFactory: async (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        username: config.get('DB_USER'),
-        password: config.get('DB_PASSWORD'),
-        database: config.get('DB_NAME'),
-        schema: config.get('DB_SCHEMA'),
-        entities: [User, Topic, Comment],
-        synchronize: true,
-        logging: true,
-      }),
-      inject: [ConfigService],
-    }),
-    UserModule,
-    CommentModule,
+    TypeOrmModule.forRoot(PostgreSqlDataSource),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [ConfigModule],
 })
 export class AppModule {}
