@@ -6,6 +6,7 @@
 - TypeORM config with PostgreSQL
 - JWT Auth with local and refresh token strategy provided by auth guards
 - REST APIs with DTOs and Entities
+- Docker-compose with Postgres, Redis and PgAdmin
 
 ## Template 2
 ### It includes:
