@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nest-backend:
-    container_name: nest-backend
+    container_name: nest-app
     image: nest-api
     build:
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
       - 5000:5000
     environment:
       - DB_TYPE=postgres
-      - PG_HOST=db
+      - PG_HOST=postgres
       - PG_USER=postgres
       - PG_PASSWORD=postgres
       - PG_DB=postgres
@@ -27,7 +27,7 @@ services:
       - redis
 
   redis:
-    container_name: redis
+    container_name: redis-db
     image: redis
     environment:
       - REDIS_PORT=6379
@@ -37,10 +37,10 @@ services:
       - backend_network
     restart: unless-stopped
     volumes:
-      - redis_data:/data
+      - redis:/data
 
   postgres:
-    container_name: postgres
+    container_name: postgres-db
     image: postgres:12
     ports:
       - 5432:5432
@@ -73,5 +73,6 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
-  redis_data:
+  postgres_data: {}
+  redis:
+    driver: local

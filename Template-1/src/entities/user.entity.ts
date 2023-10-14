@@ -27,9 +27,4 @@ export class User {
 
   @OneToMany((type) => Comment, (comment) => comment.user)
   comments: Comment[];
-
-  @BeforeInsert()
-  async hashPasword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ExistingUserDto } from 'src/user/dto/existing-user.dto';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { JwtGuard } from './guard/auth.guard';
@@ -53,6 +53,8 @@ export class AuthController {
     }
   }
 
+  //@HasRoles(Role.Employer) can be used if employer logged in generated its token
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @Get('validateToken')
   testRoute() {

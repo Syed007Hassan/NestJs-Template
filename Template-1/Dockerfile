@@ -1,7 +1,7 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:18
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /usr/src/app

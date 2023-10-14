@@ -45,6 +45,9 @@ export class AuthService {
       password,
       user.password,
     );
+
+    console.log('isPasswordMatching', isPasswordMatching);
+
     if (!isPasswordMatching) {
       throw new Error('Invalid credentials');
     }
