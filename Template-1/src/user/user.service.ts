@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,11 +7,16 @@ import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HttpService } from '@nestjs/axios';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    private readonly httpService: HttpService,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -51,5 +56,23 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async getPokemon(id: number): Promise<string> {
+    // check if data is in cache:
+    const cachedData = await this.cacheService.get<{ name: string }>(
+      id.toString(),
+    );
+    if (cachedData) {
+      console.log(`Getting data from cache!`);
+      return `${cachedData.name}`;
+    }
+
+    // if not, call API and set the cache:
+    const { data } = await this.httpService.axiosRef.get(
+      `https://pokeapi.co/api/v2/pokemon/${id}`,
+    );
+    await this.cacheService.set(id.toString(), data);
+    return await `${data.name}`;
   }
 }

@@ -52,6 +52,16 @@ export class UserController {
     }
   }
 
+  @Get('/:id')
+  async getPokemon(@Param('id') id: number) {
+    try {
+      const data = await this.userService.getPokemon(id);
+      return { success: true, data: data };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  }
+
   @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
