@@ -71,24 +71,6 @@ export class UserService {
     }
   }
 
-  // try {
-  //   const result = await new Promise((resolve, reject) => {
-  //     exec(command, (error, stdout, stderr) => {
-  //       if (error) {
-  //         console.error(`exec error: ${error}`);
-  //         reject(error);
-  //         return;
-  //       }
-  //       console.log(`stdout: ${stdout}`);
-  //       console.error(`stderr: ${stderr}`);
-  //       resolve({ stdout, stderr });
-  //     });
-  //   });
-  //   return result;
-  // } catch (error) {
-  //   console.error(`Error executing pg_restore: ${error}`);
-  // }
-
   async create(createUserDto: CreateUserDto): Promise<User> {
     const saltRounds = 10;
     const hash = bcrypt.hashSync(createUserDto.password, saltRounds);
