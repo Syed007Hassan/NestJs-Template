@@ -7,7 +7,7 @@
 - JWT Auth with local and refresh token strategy provided by auth guards
 - REST APIs with DTOs and Entities
 - Docker-compose with Postgres, Redis and PgAdmin
-- Dockerode API for restoring Pg database via script in container
+- Dockerode API for restoring Pg database via script in the container
 
 ## Template 2
 ### It includes:
