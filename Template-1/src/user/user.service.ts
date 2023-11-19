@@ -14,6 +14,7 @@ import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 import { promises as fs } from 'fs';
+import * as Docker from 'dockerode';
 
 @Injectable()
 export class UserService {
@@ -43,23 +44,50 @@ export class UserService {
     const command = `"/c/Program Files/Docker/Docker/resources/bin/docker-compose" logs postgres`;
 
     try {
-      const result = await new Promise((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`exec error: ${error}`);
-            reject(error);
-            return;
-          }
-          console.log(`stdout: ${stdout}`);
-          console.error(`stderr: ${stderr}`);
-          resolve({ stdout, stderr });
-        });
+      const docker = new Docker({ socketPath: '/var/run/docker.sock' });
+
+      docker.listContainers((err, containers) => {
+        if (err) {
+          console.log('Error:', err);
+        } else {
+          console.log('Container Information:', containers);
+        }
       });
-      return result;
+
+      // const container = docker.getContainer('postgres');
+
+      // console.log('container', container);
+
+      // const stream = await container.logs({
+      //   follow: true,
+      //   stdout: true,
+      //   stderr: true,
+      // });
+
+      // stream.on('data', (data) => console.log(data.toString()));
+      // stream.on('end', () => console.log('End of logs'));
     } catch (error) {
-      console.error(`Error executing pg_restore: ${error}`);
+      console.error(`Error is: ${error}`);
     }
   }
+
+  // try {
+  //   const result = await new Promise((resolve, reject) => {
+  //     exec(command, (error, stdout, stderr) => {
+  //       if (error) {
+  //         console.error(`exec error: ${error}`);
+  //         reject(error);
+  //         return;
+  //       }
+  //       console.log(`stdout: ${stdout}`);
+  //       console.error(`stderr: ${stderr}`);
+  //       resolve({ stdout, stderr });
+  //     });
+  //   });
+  //   return result;
+  // } catch (error) {
+  //   console.error(`Error executing pg_restore: ${error}`);
+  // }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const saltRounds = 10;
