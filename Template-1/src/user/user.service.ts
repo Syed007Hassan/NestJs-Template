@@ -12,7 +12,7 @@ import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { promises as fs } from 'fs';
 
 @Injectable()
@@ -25,7 +25,10 @@ export class UserService {
 
   async loadDataBaseDump() {
     // Define the path to the dump file
-    const dumpFilePath = join(__dirname, 'src/dbDumpFile/postgres.tar');
+    const dumpFilePath = resolve(
+      __dirname,
+      '../../src/dbDumpFile/postgres.tar',
+    );
 
     // Check if the dump file exists
     try {
@@ -36,16 +39,26 @@ export class UserService {
     }
 
     //pg restore database dump
-    const command = `pg_restore --verbose --clean --no-acl --no-owner -h ${process.env.PG_HOST} -U ${process.env.PG_USER} -d ${process.env.PG_DB} ${dumpFilePath}`;
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
+    // const command = `docker-compose exec postgres pg_restore --verbose --clean --no-acl --no-owner -h ${process.env.PG_HOST} -U ${process.env.PG_USER} -d ${process.env.PG_DB} ${dumpFilePath}`;
+    const command = `"/c/Program Files/Docker/Docker/resources/bin/docker-compose" logs postgres`;
 
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
-    });
+    try {
+      const result = await new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            reject(error);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+          resolve({ stdout, stderr });
+        });
+      });
+      return result;
+    } catch (error) {
+      console.error(`Error executing pg_restore: ${error}`);
+    }
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
