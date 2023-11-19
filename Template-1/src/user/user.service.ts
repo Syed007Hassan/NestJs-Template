@@ -26,46 +26,37 @@ export class UserService {
 
   async loadDataBaseDump() {
     // Define the path to the dump file
-    const dumpFilePath = resolve(
-      __dirname,
-      '../../src/dbDumpFile/postgres.tar',
-    );
-
-    // Check if the dump file exists
-    try {
-      await fs.access(dumpFilePath);
-    } catch (error) {
-      console.error(`Dump file not found: ${dumpFilePath}`);
-      return;
-    }
-
+    const dumpFilePath = '/dbDumpFile/postgres.tar';
     //pg restore database dump
     // const command = `docker-compose exec postgres pg_restore --verbose --clean --no-acl --no-owner -h ${process.env.PG_HOST} -U ${process.env.PG_USER} -d ${process.env.PG_DB} ${dumpFilePath}`;
-    const command = `"/c/Program Files/Docker/Docker/resources/bin/docker-compose" logs postgres`;
 
     try {
       const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
-      docker.listContainers((err, containers) => {
+      const container = docker.getContainer('postgres-db');
+      const command = [
+        'bash',
+        '-c',
+        `PGPASSWORD=${process.env.PG_PASSWORD} pg_restore --verbose --clean --no-acl --no-owner -h${process.env.PG_HOST} -U${process.env.PG_USER} -d${process.env.PG_DB} ${dumpFilePath}`,
+      ];
+
+      const options = {
+        Cmd: command,
+        AttachStdout: true,
+        AttachStderr: true,
+      };
+
+      const exec = await container.exec(options);
+
+      exec.start({ hijack: true, stdin: true }, (err, stream) => {
         if (err) {
-          console.log('Error:', err);
-        } else {
-          console.log('Container Information:', containers);
+          return console.error(`Error is: ${err}`);
         }
+
+        container.modem.demuxStream(stream, process.stdout, process.stderr);
+
+        stream.on('end', () => console.log('End of command execution'));
       });
-
-      // const container = docker.getContainer('postgres');
-
-      // console.log('container', container);
-
-      // const stream = await container.logs({
-      //   follow: true,
-      //   stdout: true,
-      //   stderr: true,
-      // });
-
-      // stream.on('data', (data) => console.log(data.toString()));
-      // stream.on('end', () => console.log('End of logs'));
     } catch (error) {
       console.error(`Error is: ${error}`);
     }
