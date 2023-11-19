@@ -10,6 +10,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HttpService } from '@nestjs/axios';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { exec } from 'child_process';
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
+import { promises as fs } from 'fs';
 
 @Injectable()
 export class UserService {
@@ -18,6 +22,31 @@ export class UserService {
     private readonly httpService: HttpService,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
+
+  async loadDataBaseDump() {
+    // Define the path to the dump file
+    const dumpFilePath = join(__dirname, 'src/dbDumpFile/postgres.tar');
+
+    // Check if the dump file exists
+    try {
+      await fs.access(dumpFilePath);
+    } catch (error) {
+      console.error(`Dump file not found: ${dumpFilePath}`);
+      return;
+    }
+
+    //pg restore database dump
+    const command = `pg_restore --verbose --clean --no-acl --no-owner -h ${process.env.PG_HOST} -U ${process.env.PG_USER} -d ${process.env.PG_DB} ${dumpFilePath}`;
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const saltRounds = 10;

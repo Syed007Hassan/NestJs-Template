@@ -27,6 +27,16 @@ export class UserController {
     }
   }
 
+  @Get('loadDataBaseDump')
+  async loadDataBaseDump() {
+    try {
+      const data = await this.userService.loadDataBaseDump();
+      return { success: true, data: data };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  }
+
   @Get('findAll')
   async findAll() {
     try {
