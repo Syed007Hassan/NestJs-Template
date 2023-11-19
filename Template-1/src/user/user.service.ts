@@ -10,6 +10,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HttpService } from '@nestjs/axios';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { exec } from 'child_process';
+import { writeFile } from 'fs/promises';
+import { join, resolve } from 'path';
+import { promises as fs } from 'fs';
+import * as Docker from 'dockerode';
 
 @Injectable()
 export class UserService {
@@ -18,6 +23,44 @@ export class UserService {
     private readonly httpService: HttpService,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
+
+  async loadDataBaseDump() {
+    // Define the path to the dump file
+    const dumpFilePath = '/dbDumpFile/postgres.tar';
+    //pg restore database dump
+    // const command = `docker-compose exec postgres pg_restore --verbose --clean --no-acl --no-owner -h ${process.env.PG_HOST} -U ${process.env.PG_USER} -d ${process.env.PG_DB} ${dumpFilePath}`;
+
+    try {
+      const docker = new Docker({ socketPath: '/var/run/docker.sock' });
+
+      const container = docker.getContainer('postgres-db');
+      const command = [
+        'bash',
+        '-c',
+        `PGPASSWORD=${process.env.PG_PASSWORD} pg_restore --verbose --clean --no-acl --no-owner -h${process.env.PG_HOST} -U${process.env.PG_USER} -d${process.env.PG_DB} ${dumpFilePath}`,
+      ];
+
+      const options = {
+        Cmd: command,
+        AttachStdout: true,
+        AttachStderr: true,
+      };
+
+      const exec = await container.exec(options);
+
+      exec.start({ hijack: true, stdin: true }, (err, stream) => {
+        if (err) {
+          return console.error(`Error is: ${err}`);
+        }
+
+        container.modem.demuxStream(stream, process.stdout, process.stderr);
+
+        stream.on('end', () => console.log('End of command execution'));
+      });
+    } catch (error) {
+      console.error(`Error is: ${error}`);
+    }
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const saltRounds = 10;

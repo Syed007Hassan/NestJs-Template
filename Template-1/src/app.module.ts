@@ -23,7 +23,7 @@ import * as redisStore from 'cache-manager-redis-store';
       port: 6379,
     }),
     TypeOrmModule.forRoot(PostgreSqlDataSource),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    // MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
     UserModule,
   ],

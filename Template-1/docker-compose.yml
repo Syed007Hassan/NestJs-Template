@@ -21,7 +21,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    restart: unless-stopped
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - postgres
       - redis
@@ -35,7 +35,6 @@ services:
       - 6379:6379
     networks:
       - backend_network
-    restart: unless-stopped
     volumes:
       - redis:/data
 
@@ -50,9 +49,10 @@ services:
       - POSTGRES_DB=postgres
     networks:
       - backend_network
-    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./src/dbDumpFile:/dbDumpFile
+      - /var/run/docker.sock:/var/run/docker.sock
 
   pgadmin:
     container_name: pgadmin
