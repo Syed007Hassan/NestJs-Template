@@ -11,7 +11,4 @@ export class Topic {
 
   @Column()
   description: string;
-
-  @OneToMany((type) => Comment, (comment) => comment.topic)
-  comments: Comment[];
 }
