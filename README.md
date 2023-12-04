@@ -4,6 +4,7 @@
 ### It includes:
 - Swagger API client
 - TypeORM config with PostgreSQL
+- TypeORM relations (One to One, Many to One etc)
 - JWT Auth with local and refresh token strategy provided by auth guards
 - REST APIs with DTOs and Entities
 - Docker-compose with Postgres, Redis and PgAdmin
