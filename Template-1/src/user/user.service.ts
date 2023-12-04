@@ -10,10 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HttpService } from '@nestjs/axios';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { exec } from 'child_process';
-import { writeFile } from 'fs/promises';
-import { join, resolve } from 'path';
-import { promises as fs } from 'fs';
 import * as Docker from 'dockerode';
 
 @Injectable()
@@ -27,8 +23,6 @@ export class UserService {
   async loadDataBaseDump() {
     // Define the path to the dump file
     const dumpFilePath = '/dbDumpFile/postgres.tar';
-    //pg restore database dump
-    // const command = `docker-compose exec postgres pg_restore --verbose --clean --no-acl --no-owner -h ${process.env.PG_HOST} -U ${process.env.PG_USER} -d ${process.env.PG_DB} ${dumpFilePath}`;
 
     try {
       const docker = new Docker({ socketPath: '/var/run/docker.sock' });
@@ -47,18 +41,23 @@ export class UserService {
       };
 
       const exec = await container.exec(options);
+      const result = await new Promise((resolve, reject) => {
+        exec.start({ hijack: true, stdin: true }, (err, stream) => {
+          if (err) {
+            reject(err);
+          }
 
-      exec.start({ hijack: true, stdin: true }, (err, stream) => {
-        if (err) {
-          return console.error(`Error is: ${err}`);
-        }
+          container.modem.demuxStream(stream, process.stdout, process.stderr);
 
-        container.modem.demuxStream(stream, process.stdout, process.stderr);
-
-        stream.on('end', () => console.log('End of command execution'));
+          stream.on('end', () => resolve('Command execution completed'));
+        });
       });
+
+      console.log('End of command execution');
+      return result;
     } catch (error) {
       console.error(`Error is: ${error}`);
+      throw error;
     }
   }
 
@@ -88,8 +87,21 @@ export class UserService {
     return user;
   }
 
-  findOne(id: number) {
-    const user = this.userRepo.findOneBy({ id });
+  async findUserByCommentId(id: number) {
+    const user = await this.userRepo.find({
+      relations: ['comments'],
+      where: { comments: { commentId: id } },
+    });
+
+    if (user.length === 0) {
+      throw new Error('No user found');
+    }
+
+    return user;
+  }
+
+  async findOne(id: number) {
+    const user = await this.userRepo.findOneBy({ id });
     return user;
   }
 

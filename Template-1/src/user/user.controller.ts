@@ -47,9 +47,19 @@ export class UserController {
     }
   }
 
+  @Get('findUserByCommentId/:id')
+  async findUserByCommentId(@Param('id') id: string) {
+    try {
+      const user = await this.userService.findUserByCommentId(+id);
+      return { success: true, data: user };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  }
+
   @Get('findOne/:id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.userService.findOne(+id);
   }
 
   @Get('findOneByEmail/:email')

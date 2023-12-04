@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { PostgreSqlDataSource } from './config/ormConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CommentModule } from './comment/comment.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -26,6 +27,7 @@ import * as redisStore from 'cache-manager-redis-store';
     // MongooseModule.forRoot(process.env.MONGODB_URI),
     AuthModule,
     UserModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
