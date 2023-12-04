@@ -87,8 +87,21 @@ export class UserService {
     return user;
   }
 
-  findOne(id: number) {
-    const user = this.userRepo.findOneBy({ id });
+  async findUserByCommentId(id: number) {
+    const user = await this.userRepo.find({
+      relations: ['comments'],
+      where: { comments: { commentId: id } },
+    });
+
+    if (user.length === 0) {
+      throw new Error('No user found');
+    }
+
+    return user;
+  }
+
+  async findOne(id: number) {
+    const user = await this.userRepo.findOneBy({ id });
     return user;
   }
 
