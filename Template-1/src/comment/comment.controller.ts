@@ -23,22 +23,31 @@ export class CommentController {
     @Body() createCommentDto: CreateCommentDto,
   ) {
     try {
-      const user = await this.commentService.create(+id, createCommentDto);
-      return user;
+      const comment = await this.commentService.create(+id, createCommentDto);
+      return { success: true, data: comment };
     } catch (error) {
-      console.log(error);
-      throw error;
+      return { success: false, message: error.message };
     }
   }
 
-  @Get()
-  findAll() {
-    return this.commentService.findAll();
+  @Get('findAll')
+  async findAll() {
+    try {
+      const comments = await this.commentService.findAll();
+      return { success: true, data: comments };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+  @Get('findCommentByUserId/:id')
+  async findOne(@Param('id') id: string) {
+    try {
+      const comment = await this.commentService.findOne(+id);
+      return { success: true, data: comment };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   }
 
   @Patch(':id')

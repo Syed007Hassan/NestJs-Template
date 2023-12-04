@@ -32,11 +32,26 @@ export class CommentService {
   }
 
   findAll() {
-    return `This action returns all comment`;
+    const comments = this.commentRepo.find();
+
+    if (!comments) {
+      throw new Error('Comments not found');
+    }
+
+    return comments;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: number) {
+    const commentByUserId = await this.commentRepo.find({
+      relations: ['user'],
+      where: { user: { id: id } },
+    });
+
+    if (commentByUserId.length === 0) {
+      throw new Error('Comment not found');
+    }
+
+    return commentByUserId;
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
