@@ -24,7 +24,6 @@ import { Role } from './model/role.enum';
 import { HasRoles } from './decorators/has-roles.decorator';
 import { JwtDto } from './dto/jwt.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
-import { GoogleOauthGuard } from './guards/google-recruiter.oauth.guard';
 import { Response } from 'express';
 import { FRONTEND_URL } from './dto/constants';
 
@@ -32,22 +31,6 @@ import { FRONTEND_URL } from './dto/constants';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @Get('google')
-  @UseGuards(GoogleOauthGuard)
-  async auth() {}
-
-  // @Get('google/callback/recruiter')
-  // @UseGuards(GoogleOauthGuard)
-  // async googleAuthCallback(@Req() req, @Res() res: Response) {
-  //   try {
-  //     const token = await this.authService.oAuthLogin(req.user);
-  //     console.log(JSON.stringify(token) + 'token');
-  //     res.redirect(`${FRONTEND_URL}/oauth?token=${token.jwt}`);
-  //   } catch (err) {
-  //     res.status(500).send({ success: false, message: err.message });
-  //   }
-  // }
 
 
   // @ApiBearerAuth()

@@ -9,10 +9,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../../auth/model/role.enum';
-import { Application } from '../../application/entities/application.entity';
 import { ApplicantDetails } from './applicant.details.entity';
-import { AppliedJob } from 'src/job/entities/appliedJob.entity';
-import { HiredApplicant } from 'src/job/entities/hiredApplicant.entity';
 
 @Entity()
 export class Applicant {
@@ -31,11 +28,11 @@ export class Applicant {
   @Column({ nullable: true, default: Role.Employee })
   role: string;
 
-  @OneToMany(() => Application, (application) => application.applicant)
-  applications: Application[];
+  // @OneToMany(() => Application, (application) => application.applicant)
+  // applications: Application[];
 
-  @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.applicant)
-  appliedJobs: AppliedJob[];
+  // @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.applicant)
+  // appliedJobs: AppliedJob[];
 
   @OneToOne(
     () => ApplicantDetails,
@@ -43,6 +40,4 @@ export class Applicant {
   )
   applicantDetails: ApplicantDetails;
 
-  @OneToOne(() => HiredApplicant, (hiredApplicant) => hiredApplicant.applicant)
-  hiredApplicant: HiredApplicant;
 }

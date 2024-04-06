@@ -218,52 +218,52 @@ export class UserController {
     }
   }
 
-  @Get('findAllJobApplicationsByStatusCount/:id/:status')
-  async findAllJobApplicationsByStatus(
-    @Param('id') id: string,
-    @Param('status') status: string,
-  ) {
-    try {
-      const applications =
-        await this.userService.findAllJobApplicationsByStatusCount(+id, status);
-      return { success: true, data: applications };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @Get('findAllJobApplicationsByStatusCount/:id/:status')
+  // async findAllJobApplicationsByStatus(
+  //   @Param('id') id: string,
+  //   @Param('status') status: string,
+  // ) {
+  //   try {
+  //     const applications =
+  //       await this.userService.findAllJobApplicationsByStatusCount(+id, status);
+  //     return { success: true, data: applications };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @Get('findRecentJobApplicationsWithFeedback/:id')
-  async findRecentJobApplicationsWithFeedback(@Param('id') id: string) {
-    try {
-      const applications =
-        await this.userService.findRecentJobApplicationsWithFeedback(+id);
-      return { success: true, data: applications };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @Get('findRecentJobApplicationsWithFeedback/:id')
+  // async findRecentJobApplicationsWithFeedback(@Param('id') id: string) {
+  //   try {
+  //     const applications =
+  //       await this.userService.findRecentJobApplicationsWithFeedback(+id);
+  //     return { success: true, data: applications };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @Get('findAllJobApplicationsCount/:id')
-  async findAllJobApplications(@Param('id') id: string) {
-    try {
-      const applications =
-        await this.userService.findAllJobApplicationsCount(+id);
-      return { success: true, data: applications };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @Get('findAllJobApplicationsCount/:id')
+  // async findAllJobApplications(@Param('id') id: string) {
+  //   try {
+  //     const applications =
+  //       await this.userService.findAllJobApplicationsCount(+id);
+  //     return { success: true, data: applications };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @Get('findAllJobApplicationsByMonth/:id')
-  async findAllJobApplicationsByMonth(@Param('id') id: string) {
-    try {
-      const applications =
-        await this.userService.findAllJobApplicationsByMonth(+id);
-      return { success: true, data: applications };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @Get('findAllJobApplicationsByMonth/:id')
+  // async findAllJobApplicationsByMonth(@Param('id') id: string) {
+  //   try {
+  //     const applications =
+  //       await this.userService.findAllJobApplicationsByMonth(+id);
+  //     return { success: true, data: applications };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
   @Delete('delete/:id')
   remove(@Param('id') id: string) {
