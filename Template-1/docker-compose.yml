@@ -10,12 +10,7 @@ services:
     ports:
       - 5000:5000
     environment:
-      - DB_TYPE=postgres
-      - PG_HOST=postgres
-      - PG_USER=postgres
-      - PG_PASSWORD=postgres
-      - PG_DB=postgres
-      - PG_PORT=5432
+      - .env
     networks:
       - backend_network
     volumes:
@@ -44,9 +39,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - .env
     networks:
       - backend_network
     volumes:
@@ -58,8 +51,7 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      - .env
     networks:
       - backend_network
     ports:
