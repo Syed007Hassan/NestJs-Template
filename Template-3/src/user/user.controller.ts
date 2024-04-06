@@ -59,164 +59,164 @@ export class UserController {
     }
   }
 
-  @ApiBearerAuth()
-  @HasRoles(Role.Employee)
-  @UseGuards(JwtGuard, RoleGuard)
-  @Post('createApplicantDetails/:id')
-  async createApplicantDetails(
-    @Param('id') id: string,
-    @Body() applicantDetailsDto: ApplicantDetailsDto,
-  ) {
-    try {
-      const user = await this.userService.createApplicantDetails(
-        +id,
-        applicantDetailsDto,
-      );
-      return { success: true, data: user };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @ApiBearerAuth()
+  // @HasRoles(Role.Employee)
+  // @UseGuards(JwtGuard, RoleGuard)
+  // @Post('createApplicantDetails/:id')
+  // async createApplicantDetails(
+  //   @Param('id') id: string,
+  //   @Body() applicantDetailsDto: ApplicantDetailsDto,
+  // ) {
+  //   try {
+  //     const user = await this.userService.createApplicantDetails(
+  //       +id,
+  //       applicantDetailsDto,
+  //     );
+  //     return { success: true, data: user };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @Get('findApplicantDetails/:id')
-  async findApplicantDetails(@Param('id') id: string) {
-    try {
-      const user = await this.userService.findApplicantDetails(+id);
-      return { success: true, data: user };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @Get('findApplicantDetails/:id')
+  // async findApplicantDetails(@Param('id') id: string) {
+  //   try {
+  //     const user = await this.userService.findApplicantDetails(+id);
+  //     return { success: true, data: user };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @ApiBearerAuth()
-  @HasRoles(Role.Employee)
-  @UseGuards(JwtGuard, RoleGuard)
-  @Patch('updateContactDetails/:id')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        phoneNo: { type: 'string' },
-        location: {
-          type: 'object',
-          properties: {
-            area: { type: 'string' },
-            city: { type: 'string' },
-            country: { type: 'string' },
-            latitude: { type: 'string' },
-            longitude: { type: 'string' },
-          },
-        },
-      },
-    },
-  })
-  async update(@Param('id') id: string, @Body() updateUserDto) {
-    try {
-      const user = await this.userService.updateContact(+id, updateUserDto);
-      return { success: true, data: user };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @ApiBearerAuth()
+  // @HasRoles(Role.Employee)
+  // @UseGuards(JwtGuard, RoleGuard)
+  // @Patch('updateContactDetails/:id')
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       phoneNo: { type: 'string' },
+  //       location: {
+  //         type: 'object',
+  //         properties: {
+  //           area: { type: 'string' },
+  //           city: { type: 'string' },
+  //           country: { type: 'string' },
+  //           latitude: { type: 'string' },
+  //           longitude: { type: 'string' },
+  //         },
+  //       },
+  //     },
+  //   },
+  // })
+  // async update(@Param('id') id: string, @Body() updateUserDto) {
+  //   try {
+  //     const user = await this.userService.updateContact(+id, updateUserDto);
+  //     return { success: true, data: user };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @ApiBearerAuth()
-  @HasRoles(Role.Employee)
-  @UseGuards(JwtGuard, RoleGuard)
-  @Patch('updateEducationDetails/:id')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        education: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              degree: { type: 'string' },
-              institution: { type: 'string' },
-              startDate: { type: 'string' },
-              endDate: { type: 'string' },
-            },
-          },
-        },
-      },
-    },
-  })
-  async updateEducationDetails(@Param('id') id: string, @Body() updateUserDto) {
-    try {
-      const user = await this.userService.updateEducationDetails(
-        +id,
-        updateUserDto,
-      );
-      return { success: true, data: user };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @ApiBearerAuth()
+  // @HasRoles(Role.Employee)
+  // @UseGuards(JwtGuard, RoleGuard)
+  // @Patch('updateEducationDetails/:id')
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       education: {
+  //         type: 'array',
+  //         items: {
+  //           type: 'object',
+  //           properties: {
+  //             degree: { type: 'string' },
+  //             institution: { type: 'string' },
+  //             startDate: { type: 'string' },
+  //             endDate: { type: 'string' },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  // })
+  // async updateEducationDetails(@Param('id') id: string, @Body() updateUserDto) {
+  //   try {
+  //     const user = await this.userService.updateEducationDetails(
+  //       +id,
+  //       updateUserDto,
+  //     );
+  //     return { success: true, data: user };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @ApiBearerAuth()
-  @HasRoles(Role.Employee)
-  @UseGuards(JwtGuard, RoleGuard)
-  @Patch('updateExperienceDetails/:id')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        experience: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              company: { type: 'string' },
-              title: { type: 'string' },
-              startDate: { type: 'string' },
-              endDate: { type: 'string' },
-              description: { type: 'string' },
-            },
-          },
-        },
-      },
-    },
-  })
-  async updateExperienceDetails(
-    @Param('id') id: string,
-    @Body() updateUserDto,
-  ) {
-    try {
-      const user = await this.userService.updateExperienceDetails(
-        +id,
-        updateUserDto,
-      );
-      return { success: true, data: user };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @ApiBearerAuth()
+  // @HasRoles(Role.Employee)
+  // @UseGuards(JwtGuard, RoleGuard)
+  // @Patch('updateExperienceDetails/:id')
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       experience: {
+  //         type: 'array',
+  //         items: {
+  //           type: 'object',
+  //           properties: {
+  //             company: { type: 'string' },
+  //             title: { type: 'string' },
+  //             startDate: { type: 'string' },
+  //             endDate: { type: 'string' },
+  //             description: { type: 'string' },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  // })
+  // async updateExperienceDetails(
+  //   @Param('id') id: string,
+  //   @Body() updateUserDto,
+  // ) {
+  //   try {
+  //     const user = await this.userService.updateExperienceDetails(
+  //       +id,
+  //       updateUserDto,
+  //     );
+  //     return { success: true, data: user };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
-  @ApiBearerAuth()
-  @HasRoles(Role.Employee)
-  @UseGuards(JwtGuard, RoleGuard)
-  @Patch('updateSkillDetails/:id')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        aboutMe: { type: 'string' },
-        skills: {
-          type: 'array',
-          items: { type: 'string' },
-        },
-      },
-    },
-  })
-  async updateSkills(@Param('id') id: string, @Body() updateUserDto) {
-    try {
-      const user = await this.userService.updateSkills(+id, updateUserDto);
-      return { success: true, data: user };
-    } catch (err) {
-      return { success: false, message: err.message };
-    }
-  }
+  // @ApiBearerAuth()
+  // @HasRoles(Role.Employee)
+  // @UseGuards(JwtGuard, RoleGuard)
+  // @Patch('updateSkillDetails/:id')
+  // @ApiBody({
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       aboutMe: { type: 'string' },
+  //       skills: {
+  //         type: 'array',
+  //         items: { type: 'string' },
+  //       },
+  //     },
+  //   },
+  // })
+  // async updateSkills(@Param('id') id: string, @Body() updateUserDto) {
+  //   try {
+  //     const user = await this.userService.updateSkills(+id, updateUserDto);
+  //     return { success: true, data: user };
+  //   } catch (err) {
+  //     return { success: false, message: err.message };
+  //   }
+  // }
 
   // @Get('findAllJobApplicationsByStatusCount/:id/:status')
   // async findAllJobApplicationsByStatus(

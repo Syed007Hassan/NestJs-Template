@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../../auth/model/role.enum';
-import { ApplicantDetails } from './applicant.details.entity';
+// import { ApplicantDetails } from './applicant.details.entity';
 
 @Entity()
 export class Applicant {
@@ -34,10 +34,10 @@ export class Applicant {
   // @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.applicant)
   // appliedJobs: AppliedJob[];
 
-  @OneToOne(
-    () => ApplicantDetails,
-    (applicantDetails) => applicantDetails.applicant,
-  )
-  applicantDetails: ApplicantDetails;
+  // @OneToOne(
+  //   () => ApplicantDetails,
+  //   (applicantDetails) => applicantDetails.applicant,
+  // )
+  // applicantDetails: ApplicantDetails;
 
 }

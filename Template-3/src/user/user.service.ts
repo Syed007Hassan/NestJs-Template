@@ -2,19 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Applicant } from './entities/user.entity';
-import { ApplicantDetails } from './entities/applicant.details.entity';
+// import { ApplicantDetails } from './entities/applicant.details.entity';
 import { Repository, Raw } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ApplicantDetailsDto } from './dto/applicantDetails.dto';
+// import { ApplicantDetailsDto } from './dto/applicantDetails.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(Applicant)
     private readonly userRepo: Repository<Applicant>,
-    @InjectRepository(ApplicantDetails)
-    private readonly applicantDetailsRepo: Repository<ApplicantDetails>,
+    // @InjectRepository(ApplicantDetails)
+    // private readonly applicantDetailsRepo: Repository<ApplicantDetails>,
 
   ) {}
 
@@ -49,128 +49,128 @@ export class UserService {
     return user;
   }
 
-  async createApplicantDetails(
-    id: number,
-    applicantDetailsDto: ApplicantDetailsDto,
-  ) {
-    const user = await this.userRepo.findOneBy({ id });
+  // async createApplicantDetails(
+  //   id: number,
+  //   applicantDetailsDto: ApplicantDetailsDto,
+  // ) {
+  //   const user = await this.userRepo.findOneBy({ id });
 
-    if (!user) {
-      throw new Error('Applicant not found');
-    }
+  //   if (!user) {
+  //     throw new Error('Applicant not found');
+  //   }
 
-    const existingApplicantDetails = await this.applicantDetailsRepo.findOne({
-      where: { applicant: { id: id } },
-      relations: ['applicant'],
-    });
+  //   const existingApplicantDetails = await this.applicantDetailsRepo.findOne({
+  //     where: { applicant: { id: id } },
+  //     relations: ['applicant'],
+  //   });
 
-    if (existingApplicantDetails) {
-      const updatedApplicantDetails = await this.applicantDetailsRepo.merge(
-        existingApplicantDetails,
-        applicantDetailsDto,
-      );
+  //   if (existingApplicantDetails) {
+  //     const updatedApplicantDetails = await this.applicantDetailsRepo.merge(
+  //       existingApplicantDetails,
+  //       applicantDetailsDto,
+  //     );
 
-      return await this.applicantDetailsRepo.save(updatedApplicantDetails);
-    } else {
-      const newUserApplicantDetails = await this.applicantDetailsRepo.create({
-        ...applicantDetailsDto,
-        applicant: user,
-      });
-      return await this.applicantDetailsRepo.save(newUserApplicantDetails);
-    }
-  }
+  //     return await this.applicantDetailsRepo.save(updatedApplicantDetails);
+  //   } else {
+  //     const newUserApplicantDetails = await this.applicantDetailsRepo.create({
+  //       ...applicantDetailsDto,
+  //       applicant: user,
+  //     });
+  //     return await this.applicantDetailsRepo.save(newUserApplicantDetails);
+  //   }
+  // }
 
-  async findApplicantDetails(id: number) {
-    const user = await this.userRepo.findOneBy({ id });
+  // async findApplicantDetails(id: number) {
+  //   const user = await this.userRepo.findOneBy({ id });
 
-    if (!user) {
-      throw new Error('Applicant not found');
-    }
+  //   if (!user) {
+  //     throw new Error('Applicant not found');
+  //   }
 
-    const applicantDetails = await this.applicantDetailsRepo.findOne({
-      where: { applicant: { id: id } },
-      relations: ['applicant'],
-    });
+  //   const applicantDetails = await this.applicantDetailsRepo.findOne({
+  //     where: { applicant: { id: id } },
+  //     relations: ['applicant'],
+  //   });
 
-    if (!applicantDetails) {
-      throw new Error('Applicant details not found');
-    }
+  //   if (!applicantDetails) {
+  //     throw new Error('Applicant details not found');
+  //   }
 
-    return applicantDetails;
-  }
+  //   return applicantDetails;
+  // }
 
   //
-  async updateContact(id: number, updateUserDto) {
-    const user = await this.applicantDetailsRepo.findOne({
-      where: { applicant: { id: id } },
-      relations: ['applicant'],
-    });
+  // async updateContact(id: number, updateUserDto) {
+  //   const user = await this.applicantDetailsRepo.findOne({
+  //     where: { applicant: { id: id } },
+  //     relations: ['applicant'],
+  //   });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
 
-    const updatedUser = await this.applicantDetailsRepo.merge(
-      user,
-      updateUserDto,
-    );
+  //   const updatedUser = await this.applicantDetailsRepo.merge(
+  //     user,
+  //     updateUserDto,
+  //   );
 
-    return await this.applicantDetailsRepo.save(updatedUser);
-  }
+  //   return await this.applicantDetailsRepo.save(updatedUser);
+  // }
 
-  async updateEducationDetails(id: number, updateUserDto) {
-    const user = await this.applicantDetailsRepo.findOne({
-      where: { applicant: { id: id } },
-      relations: ['applicant'],
-    });
+  // async updateEducationDetails(id: number, updateUserDto) {
+  //   const user = await this.applicantDetailsRepo.findOne({
+  //     where: { applicant: { id: id } },
+  //     relations: ['applicant'],
+  //   });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
 
-    const updatedUser = await this.applicantDetailsRepo.merge(
-      user,
-      updateUserDto,
-    );
+  //   const updatedUser = await this.applicantDetailsRepo.merge(
+  //     user,
+  //     updateUserDto,
+  //   );
 
-    return await this.applicantDetailsRepo.save(updatedUser);
-  }
+  //   return await this.applicantDetailsRepo.save(updatedUser);
+  // }
 
-  async updateExperienceDetails(id: number, updateUserDto) {
-    const user = await this.applicantDetailsRepo.findOne({
-      where: { applicant: { id: id } },
-      relations: ['applicant'],
-    });
+  // async updateExperienceDetails(id: number, updateUserDto) {
+  //   const user = await this.applicantDetailsRepo.findOne({
+  //     where: { applicant: { id: id } },
+  //     relations: ['applicant'],
+  //   });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
 
-    const updatedUser = await this.applicantDetailsRepo.merge(
-      user,
-      updateUserDto,
-    );
+  //   const updatedUser = await this.applicantDetailsRepo.merge(
+  //     user,
+  //     updateUserDto,
+  //   );
 
-    return await this.applicantDetailsRepo.save(updatedUser);
-  }
+  //   return await this.applicantDetailsRepo.save(updatedUser);
+  // }
 
-  async updateSkills(id: number, updateUserDto) {
-    const user = await this.applicantDetailsRepo.findOne({
-      where: { applicant: { id: id } },
-      relations: ['applicant'],
-    });
+  // async updateSkills(id: number, updateUserDto) {
+  //   const user = await this.applicantDetailsRepo.findOne({
+  //     where: { applicant: { id: id } },
+  //     relations: ['applicant'],
+  //   });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
 
-    const updatedUser = await this.applicantDetailsRepo.merge(
-      user,
-      updateUserDto,
-    );
+  //   const updatedUser = await this.applicantDetailsRepo.merge(
+  //     user,
+  //     updateUserDto,
+  //   );
 
-    return await this.applicantDetailsRepo.save(updatedUser);
-  }
+  //   return await this.applicantDetailsRepo.save(updatedUser);
+  // }
 
   // async findAllJobApplicationsCount(id: number) {
   //   const user = await this.userRepo.findOneBy({ id });

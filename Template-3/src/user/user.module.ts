@@ -4,14 +4,12 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Applicant } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ApplicantDetails } from './entities/applicant.details.entity';
 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Applicant,
-      ApplicantDetails,
     ]),
   ],
   controllers: [UserController],
