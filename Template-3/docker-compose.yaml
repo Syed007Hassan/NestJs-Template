@@ -1,69 +1,66 @@
 version: '3'
 
 services:
-  nest-backend:
-    container_name: nest-app
-    image: nest-api
+  nestapp:
+    container_name: nest-template
+    image: nest-template
     build:
       dockerfile: Dockerfile
       context: .
     ports:
       - 5000:5000
-    environment:
+    env_file:
       - .env
     networks:
-      - backend_network
+      - backend_con
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - postgres
       - redis
 
   redis:
-    container_name: redis-db
+    container_name: redis-template
     image: redis
-    environment:
-      - REDIS_PORT=6379
     ports:
       - 6379:6379
+    env_file:
+      - .env
     networks:
-      - backend_network
+      - backend_con
     volumes:
       - redis:/data
 
   postgres:
-    container_name: postgres-db
-    image: postgres:12
+    container_name: postgres-template
+    image: postgres:14.5-alpine
     ports:
-      - 5432:5432
-    environment:
+      - '5432:5432'
+    env_file:
       - .env
     networks:
-      - backend_network
+      - backend_con
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./src/dbDumpFile:/dbDumpFile
-      - /var/run/docker.sock:/var/run/docker.sock
+      - pgdata:/var/lib/postgresql/data
 
   pgadmin:
-    container_name: pgadmin
+    container_name: pgadmin-template
     image: dpage/pgadmin4
-    environment:
+    env_file:
       - .env
     networks:
-      - backend_network
+      - backend_con
     ports:
       - '5050:80'
     depends_on:
       - postgres
 
 networks:
-  backend_network:
+  backend_con:
     driver: bridge
 
 volumes:
-  postgres_data: {}
+  pgdata: {}
   redis:
     driver: local
